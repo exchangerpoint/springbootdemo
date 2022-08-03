@@ -15,7 +15,7 @@ pipeline {
 stage('Build Docker image') {
     agent any
 steps{
-sh 'DOCKER_BUILDKIT=0 docker build -t exchangerpoint/demorepo:latest .'
+sh 'docker build -t exchangerpoint/demorepo:latest .'
 }
 }
 stage('Docker Push') {
