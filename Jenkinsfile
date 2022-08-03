@@ -12,7 +12,7 @@ pipeline {
         sh 'mvn clean install'
       }
     }
-stage('Building our image') {
+stage('Build Docker image') {
     agent any
 steps{
 sh 'docker build -t exchangerpoint/demorepo:latest .'
@@ -27,7 +27,7 @@ stage('Docker Push') {
         }
       }
     }
-stage('Cleaning up') {
+stage('Docker Cleaning up') {
 steps{
 sh "docker rmi exchangerpoint/demorepo:latest:"
 }
