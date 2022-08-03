@@ -18,20 +18,18 @@ dockerImage = ''
         }
         stage('Building our image') {
 steps{
-script {
-dockerImage = docker.build registry + ":$BUILD_NUMBER"
+sh 'docker build -t exchangerpoint/demorepo:latest'
 }
 }
-}
-stage('Deploy our image') {
-steps{
-script {
-docker.withRegistry( '', registryCredential ) {
-dockerImage.push()
-}
-}
-}
-}
+stage('Docker Push') {
+      agent any
+      steps {
+        withCredentials([usernamePassword(credentialsId: 'dockerhubid', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
+          sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
+          sh 'docker push exchangerpoint/demorepo:latest:latest'
+        }
+      }
+    }
 stage('Cleaning up') {
 steps{
 sh "docker rmi $registry:$BUILD_NUMBER"
