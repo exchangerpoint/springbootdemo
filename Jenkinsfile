@@ -1,22 +1,19 @@
 pipeline {
-    agent {
+    agent none
+   stages {
+        stage('Maven Install') {
+      agent {
         docker {
             image 'maven:3.8.1-adoptopenjdk-11'
             args '-v $HOME/.m2:/root/.m2'
         }
+      }
+      steps {
+        sh 'mvn clean install'
+      }
     }
-    environment {
-registry = "exchangerpoint/demorepo"
-registryCredential = 'dockerhubid'
-dockerImage = ''
-}
-    stages {
-        stage('Install') {
-            steps {
-                sh 'mvn install'
-            }
-        }
-        stage('Building our image') {
+stage('Building our image') {
+    agent any
 steps{
 sh 'docker build -t exchangerpoint/demorepo:latest'
 }
@@ -26,13 +23,13 @@ stage('Docker Push') {
       steps {
         withCredentials([usernamePassword(credentialsId: 'dockerhubid', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
           sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
-          sh 'docker push exchangerpoint/demorepo:latest:latest'
+          sh 'docker push exchangerpoint/demorepo:latest'
         }
       }
     }
 stage('Cleaning up') {
 steps{
-sh "docker rmi $registry:$BUILD_NUMBER"
+sh "docker rmi exchangerpoint/demorepo:latest:"
 }
 }
     }
