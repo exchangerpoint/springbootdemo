@@ -33,5 +33,12 @@ steps{
 sh 'docker rmi exchangerpoint/demorepo:latest'
 }
 }
+stage('Kubernate Deployment') {
+    agent any
+steps{
+sh 'kubectl apply -f deployment.yaml.'
+}
+}       
+       
     }
 }
