@@ -27,12 +27,6 @@ stage('Docker Push') {
         }
       }
     }
-stage('Docker Cleaning up') {
-    agent any
-steps{
-sh 'docker rmi exchangerpoint/demorepo:latest'
-}
-}
 stage('Kubernate Deployment') {
     agent any
 steps{
